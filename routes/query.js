@@ -10,13 +10,14 @@ var express = require('express'),
     path = require('path'),
     moment = require('moment'),
     tableify = require('tableify'),
-    tableName;
+    tableName,
+    sql;
 
 var connection = mysql.createConnection({
-    host: 'IP',
+    host: 'soiltest',
     user: 'root',
-    password: 'password',
-    database: 'SQL'
+    password: 'Blue$apph1re#2',
+    database: 'agdbmysql'
 });
 
 connection.connect(function(err) {
@@ -33,13 +34,19 @@ router.use(bodyParser.urlencoded({
 
 router.post('/', function(req, res, next) {
 
-    tableName = req.body.tName;
-    console.log(tableName);
+    // tableName = req.body.tName;
+    // console.log(tableName);
+    // console.log(req.body);
+  sql = req.body.tName;
+    console.log(sql);
     console.log(req.body);
     //tableName= req.query.tName;
-    connection.query('SELECT * FROM SQL.' + '`' + tableName + '`', function(err, rows, fields) { //copy of periodic
+
+      connection.query(sql, function(err, rows, fields) {
+  //  connection.query('SELECT * FROM agdbmysql.' + '`' + tableName + '`', function(err, rows, fields) { //copy of periodic
         if (!err) {
 
+            //***To render server-side***
             // var html = tableify({
             //     rows
             // });

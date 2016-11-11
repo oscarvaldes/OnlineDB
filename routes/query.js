@@ -14,10 +14,10 @@ var express = require('express'),
     sql;
 
 var connection = mysql.createConnection({
-    host: 'soiltest',
+    host: 'IP',
     user: 'root',
-    password: 'Blue$apph1re#2',
-    database: 'agdbmysql'
+    password: 'password',
+    database: 'DB'
 });
 
 connection.connect(function(err) {

@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
 <title>Online DB</title>
-<link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="/static.js"></script>
+<link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
 
 <div id="info">
-  <form action="/query" method="post" id="testForm">
-    <img src="/images/UGA.png" id="poster"><br>
-    <input type="text" name="tName" placeholder="Enter Table Name" id="tName"><br>
-    <input type="submit" value="Submit" id="#get-data">
-  </form>
+  <input type="text" placeholder="Enter Table Name" id="query" autofocus zvalue="copyofperiodic" value="select * from mytest limit 30 offset 0"><br>
+  <button class="json">json</button>
+  <button class="text">text</button>
+  <button class="table">table</button>
+  <div id="usersConnected"></div>
 </div>
+<div id="data"></div>

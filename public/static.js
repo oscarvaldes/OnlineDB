@@ -1,62 +1,123 @@
 $(document).ready(function() {
-    $('#get-data').click(function() {
+  $('button.json').click(function(event) {
+    // var t0 = performance.now();
+    var data = {
+      query: $('#query').val(),
+      type : 'json'
+    };
+    $.ajax({
+        type: 'POST',                       // define the type of HTTP verb we want to use (POST for our form)
+        url: 'http://soiltest:3000/query',  // the url where we want to POST
+        data: data,                         // our data object
+        dataType: 'json'                    // what type of data do we expect back from the server
+      })
+      .done(function(data, _, out) {
+        // var t1 = performance.now();
+        // console.log('JSON took ' + (t1 - t0) + ' milliseconds.')
+        var s = '<table>',
+            flds = Object.keys(data[0]);
 
+        $('button.json').text('json: ' + out.responseText.length + ' bytes');
 
+        s += '<tr>';
+        flds.forEach(function(fld) {
+          s += '<th>' + fld;
+        });
 
-    });
+        data.forEach(function(row) {
+          s += '<tr>';
+          flds.forEach(function(fld) {
+            s += '<td>' + row[fld];
+          });
+        });
 
-    $("#testForm").submit(function(event) {
+        s += '</table>';
+        $('#data').html(s);
+        //console.log("hello");
+      })
+      .fail(function(data) {
+        console.log('Failure: ' + data.responseText);
+      });
+  }); //button.json click
 
-        //var data= $('input[name=tName]').val();
-        var data = "tName=" + $('input[name=tName]').val();
-        console.log(data);
-        //var data="tName=copyofperiodic";
-        //   $.getJSON('/query', data, function (data, status) {
-        // if (status === 200) {
-        //     alert("SUCESSSSSS!!!");
-        // }
-        // });
-        //   return true;
-        $.ajax({
-                type: 'POST', // define the type of HTTP verb we want to use (POST for our form)
-                url: '/query', // the url where we want to POST
-                data: data, // our data object
-                dataType: 'json', // what type of data do we expect back from the server
-                encode: true
-            })
-            // using the done promise callback (if successful)
-            .done(function(data) {
+  $('button.text').click(function(event) {
+    // var t0 = performance.now();
+    var data = {
+      query: $('#query').val(),
+      type : 'text'
+    };
+    $.ajax({
+        type: 'POST',                       // define the type of HTTP verb we want to use (POST for our form)
+        url: 'http://soiltest:3000/query',  // the url where we want to POST
+        data: data                          // our data object
+      })
+      .done(function(data, _, out) {
+        // var t1 = performance.now();
+        // console.log('text took ' + (t1 - t0) + ' milliseconds.')
+        var rows = data.split('\n'),
+            s = '<table>';
 
-                $.makeTable = function(mydata) {
-                    var table = $('<table border=1>');
-                    var tblHeader = "<tr>";
-                    for (var k in mydata[0]) tblHeader += "<th>" + k + "</th>";
-                    tblHeader += "</tr>";
-                    $(tblHeader).appendTo(table);
-                    $.each(mydata, function(index, value) {
-                        var TableRow = "<tr>";
-                        $.each(value, function(key, val) {
-                            TableRow += "<td>" + val + "</td>";
-                        });
-                        TableRow += "</tr>";
-                        $(table).append(TableRow);
-                    });
-                    return ($(table));
-                };
+        $('button.text').text('text: ' + out.responseText.length + ' bytes');
 
-                var mydata = eval(data);
-                var table = $.makeTable(mydata);
-                $(table).appendTo("#info");
-                // log data to the console so we can see
-                //console.log(data);
+        s += '<tr><th>' + rows[0].replace(/\|/g, '<th>');
+        rows.shift();
+        s += '<tr><td>' + rows.join('<tr><td>').replace(/\|/g, '<td>');
+        $('#data').html(s);
+      })
+      .fail(function(data) {
+        console.log('Failure: ' + data.responseText);
+      });
+  }); //button.text click
 
-                // here we will handle errors and validation messages
-            });
+  $('button.table').click(function(event) {
+    // var t0 = performance.now();
+    var data = {
+      query: $('#query').val(),
+      type : 'table'
+    };
+    $.ajax({
+        type: 'POST',                       // define the type of HTTP verb we want to use (POST for our form)
+        url: 'http://soiltest:3000/query',  // the url where we want to POST
+        data: data                          // our data object
+      })
+      .done(function(data, _, out) {
+        // var t1 = performance.now();
+        // console.log('table took ' + (t1 - t0) + ' milliseconds.')
+        $('button.table').text('table: ' + out.responseText.length + ' bytes');
 
-        // stop the form from submitting the normal way and refreshing the page
-        event.preventDefault();
+        $('#data').html(data);
+      })
+      .fail(function(data) {
+        console.log('Failure: ' + data.responseText);
+      });
+  }); //button.table click
 
-    });
+  $(document).keydown(function(e) {
+    var delta;
 
+    if(e.which === 34) {         //PGDN
+      delta = 30;
+    } else if(e.which === 33) {  //PGUP
+      delta = -30;
+    } else if(e.which === 40) {  //down
+      delta = 1;
+    } else if(e.which === 38) {  //up
+      delta = -1;
+    }
 
+    if(delta) {
+      $('#query').val(function(_, val) {
+        var sp = val.split('offset '),
+            ofs = +sp[1] + delta;
+
+        return sp[0] + 'offset ' + ofs;
+      });
+      $('button.selected').click();
+    }
+  });
+
+  $('button').click(function() {
+    $('button').removeClass('selected');
+    $(this).addClass('selected');
+  });
 });
